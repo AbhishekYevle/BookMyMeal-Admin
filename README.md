@@ -1,5 +1,5 @@
 Frontend file :
-TO run : /n
+TO run : 
 cd .\client\
 npm i
 npm start
