@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo_white from '../images/logo-white.svg';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'react-bootstrap';
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

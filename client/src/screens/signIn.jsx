@@ -1,43 +1,32 @@
 import React, { useState } from "react";
-// import useNavigate from 'react-router-dom';
 import axios from 'axios';
-import "../css/main.css";
 import logo from '../images/logo.svg';
 
 const SignIn = () => {
   const [passwordShown, setPasswordShown] = useState(false);
+  const [data, setData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
   };
 
-  const [ data, setData ] = useState({
-    email:"",
-    password:""
-  });
-
-  const [ error, setError ] = useState("");
-//   const navigate = useNavigate();
-
-  const handleChange = ( { currentTarget: input } ) => {
-    setData( { ...data, [input.name]: input.value } )
+  const handleChange = ({ currentTarget: input }) => {
+    setData({ ...data, [input.name]: input.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const url = "http://localhost:5000/api/admin/signin";
-        const { data: res } = await axios.post(url, data);
-        // navigate("/signin")
-        console.log(res.message);
+      const url = "http://localhost:5000/api/admin/signin";
+      const response = await axios.post(url, data);
+      console.log(response.data.msg); // Assuming your backend sends a 'msg' field
+
+      window.location.href = "http://localhost:5173/userlist";
     } catch (error) {
-        if(
-            error.response && 
-            error.response.status >= 400 &&
-            error.response.status <= 500
-        ){
-            setError(error.response.data.message)
-        }
+      if (error.response && error.response.status >= 400 && error.response.status <= 500) {
+        setError(error.response.data.msg);
+      }
     }
   };
 
@@ -102,7 +91,7 @@ const SignIn = () => {
               <div className="form-group mb-0">
                 <div className="utility">
                   <p>
-                    <a href="#" className="form-link">
+                    <a href="http://localhost:5173/forgotPassword" className="form-link">
                       Forgot Password?
                     </a>
                   </p>
