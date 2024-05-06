@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT;
 const router = require("./router/auth-router");
 const connectDB = require("./utils/db")
 const cors = require('cors');
+
+// const bookingApi = `${process.env.CLIENT_API}/bookinglist`;
+// const clientApi = process.env.CLIENT_API;
 
 app.use( express.json() );
 
@@ -13,7 +16,7 @@ app.use( express.json() );
 
 // to allow all type of requests from port:5173
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: `http://localhost:5173`
   }));
 
   // to allow particular type of requests from port:5173
