@@ -1,102 +1,107 @@
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo_white from '../images/logo-white.svg'
-import { useState, useEffect } from 'react';
-import '../css/main.css';
+
+// const calendarApi = `${process.env.CLIENT_API}/calendar`;
+// const bookingApi = `${process.env.CLIENT_API}/bookinglist`;
+// const userApi = `${process.env.CLIENT_API}/userlist`
 
 const Navbar = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const clickHandler = ({ target }) => {
-      if (!target.closest('.dropdown')) {
-        setDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('click', clickHandler);
-
-    return () => {
-      document.removeEventListener('click', clickHandler);
-    };
-  }, []);
-
-  const toggleDropdown = () => {
-    setDropdownOpen((prevState) => !prevState);
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAuthenticated');
+    toast.success('Logged Out!');
+    navigate('/');
   };
 
   return (
-    <nav class="navbar navbar-expand-lg fixed-top">
-      <div class="container-fluid">
-        <div class="container head">
-          <a href="#" class="navbar-brand">
-            <div class="logoW-wrapper">
-              <img src={logo_white} alt="Rishabh Software" />
-              <span>Meal Facility</span>
-            </div>
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="http://localhost:5173/calendar">Calendar</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active" href="http://localhost:5173/bookinglist">Booking List</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="http://localhost:5173/userlist">User List</a>
-              </li>
-            </ul>
-            <div class="h-100 d-lg-inline-flex align-items-center">
-              <ul class="app-nav">
-                {/* Notification Menu */}
-                <li class="dropdown">
-                  <a class="app-nav__item notification-num" href="#" onClick={toggleDropdown}>
-                    <i class="icon-bell"></i>
-                    <span class="num">5</span>
+    <nav className="navbar navbar-expand-lg fixed-top">
+        <div className="container-fluid">
+          <div className="container head">
+            <a href="#" className="navbar-brand">
+              <div className="logoW-wrapper">
+                <img src={logo_white} alt="Rishabh Software" />
+                <span>Meal Facility</span>
+              </div>
+            </a>
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                <li className="nav-item">
+                  <a className="nav-link" aria-current="page" href="http://localhost:5173/calendar">
+                    Calendar
                   </a>
-                  {dropdownOpen && (
-                    <ul class="dropdown-menu settings-menu dropdown-menu-left">
-                      <li>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changepwdModal">
-                          Change Password
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                  )}
                 </li>
-                {/* User Menu */}
-                <li class="dropdown">
-                  <a class="app-nav__item dropdown-toggle" href="#" onClick={toggleDropdown}>
-                    Admin
+                <li className="nav-item">
+                  <a className="nav-link" href="http://localhost:5173/bookinglist">
+                    Booking List
                   </a>
-                  {dropdownOpen && (
-                    <ul class="dropdown-menu settings-menu dropdown-menu-left">
-                      <li>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changepwdModal">
-                          Change Password
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                  )}
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link Active" aria-current="page" href="http://localhost:5173/userlist">
+                    User List
+                  </a>
                 </li>
               </ul>
+              <div className="h-100 d-lg-inline-flex align-items-center">
+                <ul className="app-nav">
+                  {/* Notification Menu */}
+                  <li className="dropdown">
+                    <a
+                      className="app-nav__item notification-num"
+                      href="#"
+                      data-toggle="dropdown"
+                      aria-label="Show notifications"
+                    >
+                      <i className="icon-bell"></i> <span className="num">5</span>
+                    </a>
+                  </li>
+                  {/* User Menu */}
+                  <li className="dropdow">
+                    <a
+                      className="app-nav__item dropdown-toggle"
+                      href="#"
+                      data-toggle="dropdown"
+                      aria-label="Open Profile Menu"
+                    >
+                      Admin
+                    </a>
+                    <ul className="dropdown-menu settings-menu dropdown-menu-right">
+                      <li>
+                        <a
+                          className="dropdown-item"
+                          href="#"
+                          data-toggle="modal"
+                          data-target="#changepwdModal"
+                        >
+                          Change Password
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="#" onClick={handleLogout}>
+                          Logout
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
   );
 };
 

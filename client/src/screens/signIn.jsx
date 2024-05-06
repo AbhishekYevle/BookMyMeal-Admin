@@ -1,11 +1,19 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../images/logo.svg';
+
+// const server = process.env.SERVER_API;
+// const forgotPasswordApi = `${process.env.CLIENT_API}/bookinglist`;
+// const userApi = `${process.env.CLIENT_API}/userlist`
 
 const SignIn = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
@@ -17,12 +25,24 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!data.email || !data.password ) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     try {
-      const url = "http://localhost:5000/api/admin/signin";
+      const url = `http://localhost:5000/api/admin/signin`;
       const response = await axios.post(url, data);
       console.log(response.data.msg); // Assuming your backend sends a 'msg' field
 
-      window.location.href = "http://localhost:5173/userlist";
+      if (response.data.isError === false) {
+        sessionStorage.setItem('isAuthenticated', 'true');
+        navigate('/userlist');
+    } else {
+      toast.error('Invalid email or password');
+    }
+
+      // window.location.href = `${userApi}`;
     } catch (error) {
       if (error.response && error.response.status >= 400 && error.response.status <= 500) {
         setError(error.response.data.msg);
@@ -91,7 +111,7 @@ const SignIn = () => {
               <div className="form-group mb-0">
                 <div className="utility">
                   <p>
-                    <a href="http://localhost:5173/forgotPassword" className="form-link">
+                    <a href="http://localhost:5173/forgotpassword" className="form-link">
                       Forgot Password?
                     </a>
                   </p>
