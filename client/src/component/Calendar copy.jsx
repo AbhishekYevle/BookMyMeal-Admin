@@ -13,7 +13,7 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/bookinglist');
+        const response = await axios.get('http://43.205.144.105:5000/api/bookinglist');
         const data = await response.data;
 
         const today = moment().format('YYYY-MM-DD');

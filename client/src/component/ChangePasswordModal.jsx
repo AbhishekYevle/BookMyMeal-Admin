@@ -48,7 +48,7 @@ const ChangePasswordModal = () => {
 
         const token = localStorage.getItem('token');
 
-        const response = await axios.patch('http://localhost:5000/api/changepassword', {
+        const response = await axios.patch('http://43.205.144.105:5000/api/changepassword', {
           oldPassword,
           newPassword,
         },

@@ -54,7 +54,7 @@ const AddDisabledDate = () => {
     console.log(dateData);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/adddisableddates',dateData, { headers: { Authorization: token } });
+      const response = await axios.post('http://43.205.144.105:5000/api/adddisableddates',dateData, { headers: { Authorization: token } });
       document.getElementById('closeButton').click();
       alert(response.data.msg);
       window.location.reload();

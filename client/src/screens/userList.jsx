@@ -14,7 +14,7 @@ const Content = () => {
     const token = localStorage.getItem('token');
     console.log(token);
     axios
-      .get(`http://localhost:5000/api/userlist`, { headers: { Authorization: token } })
+      .get(`http://43.205.144.105:5000/api/userlist`, { headers: { Authorization: token } })
       .then((response) => setUsers(response.data))
       .catch((err) => console.log(err));
   }, []);
@@ -22,7 +22,7 @@ const Content = () => {
   const deleteUser = async (email, empId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.patch(`http://localhost:5000/api/deleteemployee`, { email, empId, isDelete: true }, { headers: { Authorization: token } });
+      const response = await axios.patch(`http://43.205.144.105:5000/api/deleteemployee`, { email, empId, isDelete: true }, { headers: { Authorization: token } });
       setUsers(users.filter((user) => user.email !== email));
       alert(response.data.msg);
     } catch (err) {

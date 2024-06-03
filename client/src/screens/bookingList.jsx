@@ -18,7 +18,7 @@ const Content = () => {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:5000/api/bookinglist`, { headers: { Authorization: token } });
+        const response = await axios.get(`http://43.205.144.105:5000/api/bookinglist`, { headers: { Authorization: token } });
         setBookings(response.data);
       } catch (error) {
         console.error('Error fetching booking list:', error.response.data);
@@ -34,7 +34,7 @@ const Content = () => {
 
   const handleDelete = async (bookingId) => {
     try {
-      await axios.patch(`http://localhost:5000/api/deletebooking`, { bookingId } );
+      await axios.patch(`http://43.205.144.105:5000/api/deletebooking`, { bookingId } );
       setBookings(bookings.filter(booking => booking._id !== bookingId));
     } catch (error) {
       console.error('Error deleting booking:', error.response.data);

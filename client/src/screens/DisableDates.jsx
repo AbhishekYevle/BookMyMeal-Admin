@@ -12,7 +12,7 @@ const Content = () => {
         const fetchDisabledDates = async () => {
           try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:5000/api/disableddates',   { headers: { Authorization: token } });
+            const response = await axios.get('http://43.205.144.105:5000/api/disableddates',   { headers: { Authorization: token } });
             setDisabledDates(response.data);
           } catch (error) {
             console.error('Error fetching disabled dates', error);
