@@ -17,8 +17,8 @@ const Content = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:5000/api/bookinglist`, { headers: { Authorization: token } });
+
+        const response = await axios.get(`http://localhost:5000/api/bookinglist`);
         setBookings(response.data);
       } catch (error) {
         console.error('Error fetching booking list:', error.response.data);
@@ -30,15 +30,6 @@ const Content = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };
-
-  const handleDelete = async (bookingId) => {
-    try {
-      await axios.patch(`http://localhost:5000/api/deletebooking`, { bookingId } );
-      setBookings(bookings.filter(booking => booking._id !== bookingId));
-    } catch (error) {
-      console.error('Error deleting booking:', error.response.data);
-    }
   };
 
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -95,6 +86,7 @@ const Content = () => {
               {view === 'RishabhEmployees' && <th>Employee ID</th>}
               {view === 'RishabhEmployees' && <th> Employee Name</th>}
               {view === 'RishabhEmployees' && <th> Department</th>}
+              {/* {view === 'RishabhEmployees' && <th>Last Name</th>} */}
               <th>Dates</th>
               {view !== 'RishabhEmployees' && <th>Notes</th>}
               {view !== 'RishabhEmployees' && <th>Booking Count</th>}
@@ -114,6 +106,8 @@ const Content = () => {
                     <td>{booking.employees[0].department}</td>
                   </>
                 )}
+                {/* <td>{new Date(booking.startDate).toLocaleDateString('en-IN')}</td>
+                <td>{new Date(booking.endDate).toLocaleDateString('en-IN')}</td> */}
                 <td>
                   {booking.dates.map((date, index) => (
                     <span key={index}>{new Date(date).toLocaleDateString('en-IN')}, </span>
@@ -126,10 +120,9 @@ const Content = () => {
                     <td>{booking.bookingName || 'NA'}</td>
                   </>
                 )}
-                <td>
-                  <a href="#" className="delete-link" aria-label="Delete" onClick={() => handleDelete(booking._id)}>
-                    <FaTrash />
-                  </a>
+                <td><a href="#" className="delete-link" aria-label="Delete">
+                      <FaTrash />
+                    </a>
                 </td>
               </tr>
             ))}

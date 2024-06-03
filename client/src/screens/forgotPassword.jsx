@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import '../css/main.css';
 import logo from '../images/logo.svg';
+// import { toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
 
 const ForgotPasswordForm = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const email = event.target.email.value;
-    // Add your logic to handle the email submission
-    console.log('Email submitted:', email);
+  const [email, setEmail] = useState('');
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`http://localhost:5000/api/forgotpassword`, { email });
+      // toast.success('Password reset link sent to your email!');
+      alert('Password reset link sent to your email!');
+    } catch (error) {
+      console.error(error);
+      // toast.error('An error occurred while sending the reset link.');
+      alert('An error occurred while sending the reset link.');
+    }
   };
 
   return (
@@ -25,7 +41,15 @@ const ForgotPasswordForm = () => {
             <div className="form-group">
               <label className="control-label">Email</label>
               <div className="input-addon">
-                <input className="form-control" type="text" name="email" placeholder="Robert@rishabhsoft.com" autoFocus />
+                <input 
+                  className="form-control" 
+                  type="text" 
+                  name="email" 
+                  placeholder="Robert@rishabhsoft.com"
+                  value={email}
+                  onChange={handleEmailChange} 
+                  autoFocus 
+                />
                 <div className="icon-after icon-green"><i className="icon-check"></i></div>
               </div>
             </div>

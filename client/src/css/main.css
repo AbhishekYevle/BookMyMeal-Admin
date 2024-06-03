@@ -11333,6 +11333,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.focus {
 .dropdown-menu.dropdown-menu-right {
   left: auto;
   right: 0;
+  top: 80%;
 }
 
 .dropdown-item .fa,
@@ -12630,3 +12631,4 @@ img {
 .form-group .search-wrapper .form-control {
   padding: 6px 12px 6px 45px;
 }/*# sourceMappingURL=main.css.map */
+

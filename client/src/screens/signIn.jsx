@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -13,7 +13,22 @@ const SignIn = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('email');
+    const savedPassword = localStorage.getItem('password');
+  
+    if (savedEmail && savedPassword) {
+      setData({ email: savedEmail, password: savedPassword });
+      setRememberMe(true);
+    }
+  }, []);
+
+  const handleRememberMeChange = () => {
+    setRememberMe(!rememberMe);
+  };
 
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
@@ -30,16 +45,26 @@ const SignIn = () => {
       return;
     }
 
+    if (rememberMe) {
+      localStorage.setItem('email', data.email);
+      localStorage.setItem('password', data.password);
+    }
+
     try {
-      const url = `http://localhost:5000/api/admin/signin`;
+      const url = `http://localhost:5000/api/signin`;
       const response = await axios.post(url, data);
-      console.log(response.data.msg); // Assuming your backend sends a 'msg' field
+      console.log(response.data.msg); 
 
       if (response.data.isError === false) {
-        sessionStorage.setItem('isAuthenticated', 'true');
-        navigate('/userlist');
+        const { token } = response.data;
+        localStorage.setItem('token', token);
+        // sessionStorage.setItem('isAuthenticated', 'true');
+        // toast.success('Login Sucessful.');
+        alert('Login Sucessful.');
+        navigate('/calendar');
     } else {
-      toast.error('Invalid email or password');
+      // toast.error('Invalid email or password');
+      alert('Invalid email or password');
     }
 
       // window.location.href = `${userApi}`;
@@ -104,7 +129,7 @@ const SignIn = () => {
               <div className="form-group mb-0">
                 <label className="custom-checkbox mb-0">
                   <span className="checkbox__title">Remember Me</span>
-                  <input className="checkbox__input" type="checkbox" />
+                  <input className="checkbox__input" type="checkbox" onChange={handleRememberMeChange}/>
                   <span className="checkbox__checkmark"></span>
                 </label>
               </div>

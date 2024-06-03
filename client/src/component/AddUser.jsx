@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,24 +7,25 @@ import 'react-toastify/dist/ReactToastify.css';
 // const server = process.env.SERVER_API;
 // const client = process.env.CLIENT_API;
 
-const AddAdmin = () => {
-  const [passwordShown, setPasswordShown] = useState(false);
+const AddUser = () => {
+  // const [passwordShown, setPasswordShown] = useState(false);
   const [data, setData] = useState({ username: "", email: "", phone: "", department: "", gender: "", password: "" });
-  const [selectedGender, setSelectedGender] = useState(data.gender);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  // const [selectedGender, setSelectedGender] = useState(data.gender);
+  // const [error, setError] = useState("");
+  // const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     axios
-      .get(`http://localhost:5000/api/admin/userlist`)
+      .get(`http://localhost:5000/api/userlist`,   { headers: { Authorization: token } })
       .then((response) => setUsers(response.data))
       .catch((err) => console.log(err));
   }, []);
 
-  const togglePassword = () => {
-    setPasswordShown(!passwordShown);
-  };
+  // const togglePassword = () => {
+  //   setPasswordShown(!passwordShown);
+  // };
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
@@ -47,25 +48,30 @@ const AddAdmin = () => {
     // }
 
     try {
-      const url = `http://localhost:5000/api/admin/signup`;
-      const response = await axios.post(url, data);
+      const token = localStorage.getItem('token');
+      const url = `http://localhost:5000/api/addemployee`;
+      const response = await axios.post(url, data, { headers: { Authorization: token } });
       console.log(response.data.msg, response.data.isError); 
-      toast.success("Admin Created Successfully.");
+      // toast.success("Employee Created Successfully.");
 
-      if (response.data.isError == false) {
+      if (response.data.isError === false) {
         // localStorage.setItem('isAuthenticated', 'true');
         // navigate('/bookinglist');
         document.getElementById('closeButton').click();
-        toast.success("Admin Created Successfully.");
+        alert("Employee Created Successfully.");
+        window.location.reload();
+        // toast.success("Employee Created Successfully.");
         // setData({ username: "", email: "", phone: "", department: "", gender: "", password: "" });
     } else {
+      alert('Invalid email or password');
       toast.error('Invalid email or password');
     }
 
       // window.location.href = `${client}/userlist`;
     } catch (error) {
       if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-        setError(error.response.data.msg);
+        alert(error.response.data.msg);
+        // setError(error.response.data.msg);
       }
     }
   };
@@ -83,16 +89,34 @@ const AddAdmin = () => {
         </div>
         <div className="modal-body">
           <div className="form-group custom-radio">
-            <div className="form-group">
-              <label className="control-label">Full Name</label>
+          <div className="form-group">
+              <label className="control-label">First Name</label>
               <div className="input-addon">
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="Rishabh Soft"
-                  name="username"
+                  placeholder="Abhishek"
+                  name="firstName"
                   onChange={handleChange}
-                  value={data.username}
+                  value={data.firstName}
+                  autoFocus
+                  required
+                />
+                {/* <div className="icon-after icon-green">
+                  <i className="icon-check"></i>
+                </div> */}
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="control-label">Last Name</label>
+              <div className="input-addon">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Yevle"
+                  name="lastName"
+                  onChange={handleChange}
+                  value={data.lastName}
                   autoFocus
                   required
                 />
@@ -153,7 +177,7 @@ const AddAdmin = () => {
                 </div> */}
               </div>
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <label className="control-label">Password</label>
               <div className="input-addon">
                 <input
@@ -174,7 +198,7 @@ const AddAdmin = () => {
                   onClick={togglePassword}
                 ></span>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="form-group custom-radio">
             <label>Gender</label>
@@ -187,6 +211,7 @@ const AddAdmin = () => {
                   name="gender"
                   onChange={handleChange} 
                   defaultChecked 
+                  checked={data.gender === "male"}
                   />
                 <label htmlFor="test4" className="mr-0">Male</label>
               </div>
@@ -197,6 +222,7 @@ const AddAdmin = () => {
                   value="female" 
                   name="gender" 
                   onChange={handleChange}
+                  checked={data.gender === "female"}
                 />
                 <label htmlFor="test5" className="mr-0">female</label>
               </div>
@@ -216,11 +242,12 @@ const AddAdmin = () => {
                       </label>
                     </div>
                   </th>
-                  <th>Employee ID</th>
+                  <th>ID</th>
                   <th>Employee Name</th>
                   <th>Email</th>
-                  <th>Phone No.</th>
                   <th>Department</th>
+                  <th>Phone No.</th>
+                  <th>Gender</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,10 +260,12 @@ const AddAdmin = () => {
                       </label>
                     </div>
                   </td>
-                  <td>{user._id}</td>
-                  <td>{user.username}</td>
-                  <td>{user.email}</td>
-                  <td>{user.phone}</td>
+                  <td>{user.empId}</td>
+                <td>{user.firstName} {user.lastName}</td>
+                <td>{user.email}</td>
+                <td>{user.department}</td>
+                <td>{user.phone}</td>
+                <td>{user.gender}</td>
                 </tr>
                 ))}
               </tbody>
@@ -245,7 +274,7 @@ const AddAdmin = () => {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-outline-primary">Cancel</button>
-          <button type="button" className="btn btn-primary" onClick={handleSubmit}>Book</button>
+          <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
         </div>
       </div>
     </div>
@@ -253,4 +282,4 @@ const AddAdmin = () => {
     );
   };
 
-  export default AddAdmin;
+  export default AddUser;

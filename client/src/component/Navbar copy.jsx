@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo_white from '../images/logo-white.svg'
-import { FaCog } from 'react-icons/fa';
 
 // const calendarApi = `${process.env.CLIENT_API}/calendar`;
 // const bookingApi = `${process.env.CLIENT_API}/bookinglist`;
@@ -83,13 +82,18 @@ const Navbar = () => {
                 </li>
               </ul>
               <div className="h-100 d-lg-inline-flex align-items-center">
-                <a href="http://localhost:5173/disabledate">
-                  <FaCog style={{ cursor: 'pointer', color: 'white' }} />
-                  {/* <i className="icon-bell"></i> */}
-                </a>
-              </div>
-              <div className="h-100 d-lg-inline-flex align-items-center">
                 <ul className="app-nav">
+                  {/* Notification Menu */}
+                  <li className="dropdown">
+                    <a
+                      className="app-nav__item notification-num"
+                      href="#"
+                      data-toggle="dropdown"
+                      aria-label="Show notifications"
+                    >
+                      <i className="icon-bell"></i> <span className="num">5</span>
+                    </a>
+                  </li>
                   {/* User Menu */}
                   <li className="dropdow">
                     <a

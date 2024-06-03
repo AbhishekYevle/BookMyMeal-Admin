@@ -13,9 +13,9 @@ const AddBooking = () => {
   const [mealType, setMealType] = useState("lunch");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [notes, setNotes] = useState("");
-  const [bookingCount, setBookingCount] = useState("");
-  const [bookingName, setBookingName] = useState("");
+  const [notes, setNotes] = useState(null);
+  const [bookingCount, setBookingCount] = useState(null);
+  const [bookingName, setBookingName] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [accountSearch, setAccountSearch] = useState("");
   const [departmentSearch, setDepartmentSearch] = useState("");
@@ -85,6 +85,18 @@ const AddBooking = () => {
     setEmpIdSearch(e.target.value);
   };
 
+  const getDatesInRange = (start, end) => {
+    const date = new Date(start.getTime());
+    const dates = [];
+
+    while (date <= end) {
+      dates.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+    }
+
+    return dates;
+  };
+
   const filterUsers = () => {
     const lowerAccountSearch = accountSearch.toLowerCase();
     const lowerDepartmentSearch = departmentSearch.toLowerCase();
@@ -114,25 +126,24 @@ const AddBooking = () => {
 
     const formattedStartDate = startDate ? startDate.toISOString().split('T')[0] : null;
     const formattedEndDate = endDate ? endDate.toISOString().split('T')[0] : null;
-    const dateArray = startDate && endDate ? getDatesArray(startDate, endDate).map(date => date.toISOString().split('T')[0]) : [];
-  
-    const bookingData = {
-      category,
-      mealType,
-      startDate: formattedStartDate,
-      endDate: formattedEndDate,
-      dates: dateArray,
-      employees: selectedUserData, 
-      notes,
-      bookingCount,
-      bookingName
-    };
+    const dateArray = startDate && endDate ? getDatesInRange(startDate, endDate).map(date => date.toISOString().split('T')[0]) : [];
+
+   const bookingData = {
+    category,
+    mealType,
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
+    dates: dateArray,
+    employees: selectedUserData, 
+    notes,
+    bookingCount,
+    bookingName
+  };
 
     console.log(bookingData);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/addbooking', bookingData, { headers: { Authorization: token } });
+      const response = await axios.post('http://localhost:5000/api/addbooking', bookingData);
       document.getElementById('closeButton').click();
       alert(response.data.msg);
       window.location.reload();
@@ -147,22 +158,6 @@ const AddBooking = () => {
   const isWeekday = date => {
     const day = date.getDay();
     return day !== 0 && day !== 6;
-  };
-
-  const getDatesArray = (startDate, endDate) => {
-    const dateArray = [];
-    let currentDate = new Date(startDate);
-  
-    while (currentDate <= new Date(endDate)) {
-      const dayOfWeek = currentDate.getDay();
-      console.log(dayOfWeek);
-      if (dayOfWeek !== 0 && dayOfWeek !== 1) {
-        dateArray.push(new Date(currentDate));
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  
-    return dateArray;
   };
 
   return (

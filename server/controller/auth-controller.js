@@ -1,6 +1,7 @@
 const Admin = require("../models/admin-model");
 const bcrypt = require("bcryptjs");
-const sendEmail = require("../utils/email");
+// const sendEmail = require("../utils/sendEmail");
+const { syncIndexes } = require("mongoose");
 
 // *------------------------
 // Home Logic 
@@ -26,7 +27,7 @@ const signup = async (req,res) => {
     try {
         // console.log("Hello world");
         console.log(req.body);
-        const { username, email, phone, password } = req.body;
+        const { username, email, phone, password, department } = req.body;
 
         const adminExists = await Admin.findOne( { email } );
         
@@ -42,11 +43,13 @@ const signup = async (req,res) => {
             username, 
             email, 
             phone, 
+            department,
             password: hashPassword 
         });
         
         res.status(200).json( 
             { 
+                isError: false,
                 msg: "Registration Successfull",
                 token: await adminCreated.generateToken(),
                 userId: adminCreated._id.toString() 
@@ -54,7 +57,12 @@ const signup = async (req,res) => {
 
         // res.status(200).send("This is SignUp Page.");
     } catch (error) {
-        res.status(400).send( { msg:"Page Not Found" } );
+
+        res.status(400).send( 
+            { 
+                isError: true,
+                msg:"Page Not Found" 
+            });
     }
 }
 
@@ -84,6 +92,7 @@ const signIn = async (req,res) => {
         if(passwordMatch) {
             res.status(200).json(
                 {
+                    isError: false,
                     msg: "Login Successfull",
                     token: await adminExists.generateToken(),
                     userId: adminExists._id.toString()
@@ -100,7 +109,6 @@ const signIn = async (req,res) => {
 }
 
 module.exports.signIn = signIn;
-
 
 // *------------------------
 // Forgot Password Logic 
@@ -141,9 +149,7 @@ const resetPassword = async (req,res) => {
         }else{
             return res.status(500).json({ msg: "Password updated Successfully." });
         }
-                // Send Email
-                const resetUrl = `${req.protocol}://${req.get('host')}/api/admin/resetPassword`;
-                await sendEmail();
+                
         }
 
      catch (error) {

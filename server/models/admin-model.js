@@ -14,6 +14,10 @@ const AdminSchema = new mongoose.Schema({
         type:String,
         require: true
     },
+    department:{
+        type:String,
+        require: false
+    },
     password:{
         type:String,
         require: true
@@ -35,7 +39,7 @@ AdminSchema.methods.generateToken = async function () {
             },
             process.env.JWT_SECRET_KEY,
             {
-                expiresIn:"30d",
+                expiresIn:"1h",
             }
         )
     } catch (error) {
