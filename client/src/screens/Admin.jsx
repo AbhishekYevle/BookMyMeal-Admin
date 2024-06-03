@@ -6,7 +6,8 @@ const Admin = () => {
     const [admins, setAdmins] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/admin/userlist`)
+        
+        axios.get(`http://localhost:5000/api/userlist`)
             .then(response => setAdmins(response.data))
             .catch(err => console.log(err));
     }, []);

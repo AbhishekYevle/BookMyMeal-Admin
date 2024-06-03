@@ -2,10 +2,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import signIn from './screens/signIn';
 import forgotPassword from './screens/forgotPassword';
+import Calendar from './screens/Calendar';
 import BookingList from './screens/BookingList';
 import userList from './screens/userList';
 import Admin from './screens/Admin';
+import ResetPassword from './screens/ResetPassword';
 import PrivateRoute from './PrivateRoute';
+import DisableDates from './screens/DisableDates';
 
 function Routers() {
   return (
@@ -13,10 +16,13 @@ function Routers() {
       <Routes>
         <Route path="/" exact Component={signIn} />
         <Route path="/forgotpassword" Component={forgotPassword} />
+        <Route path="/resetpassword" Component={ResetPassword} />
         <Route element={<PrivateRoute />}>
+          <Route path="/calendar" Component={Calendar} />
           <Route path="/bookinglist" Component={BookingList} />
           <Route path="/userlist" Component={userList} />
           <Route path="/admin" Component={Admin} />
+          <Route path="/disabledate" Component={DisableDates} />
         </Route>
       </Routes>
     </Router>

@@ -1,3 +1,95 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import '../css/main.css';
+import Navbar from '../component/Navbar';
+import ChangePasswordModal from '../component/ChangePasswordModal';
+import AddBooking from '../component/AddBooking';
+import Footer from '../component/Footer';
+import axios from 'axios';
+
+const Content = () => {
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios
+      .get(`http://localhost:5000/api/bookinglist`)
+      .then((response) => setBookings(response.data))
+      .catch((error) => console.error('Error fetching booking list:', error.response.data));
+  }, []);
+
+  return (
+    <div className="container-fluid">
+        <div className="container pt-30 mb-30">
+          <div className="container-head">
+            <div className="container-left">
+              <h3 className="container-title">Booking List</h3>
+            </div>
+            <div className="container-right">
+              <a
+                href="#"
+                aria-label="Add Booking"
+                className="btn btn-primary"
+                data-toggle="modal"
+                data-target="#addBookingModal"
+              >
+                Add Booking
+              </a>
+            </div>
+          </div>
+          <div className="content-tab">
+            <a className="content-tab_link active" href="#">
+              Rishabh Employees
+            </a>
+            <a className="content-tab_link" href="#">
+              Others
+            </a>
+          </div>
+          <table className="table table-hover responsive nowrap table-bordered">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Meal Type</th>
+                        <th>Start Date</th>
+                        <th>Employee Name</th>
+                        <th>Notes</th>
+                        <th>Booking Counts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {bookings.map((booking) => (
+                        <tr>
+                            <td>{booking.bookingData._id}</td>
+                            <td>{booking.bookingData.mealType}</td>
+                            <td>{new Date(booking.bookingData.startDate).toLocaleDateString('en-IN')} - {new Date(booking.bookingData.endDate).toLocaleDateString('en-IN')}</td>
+                            <td>{booking.bookingData.employeeNames}</td>
+                            <td>{booking.bookingData.notes}</td>
+                            <td>{booking.bookingData.bookingCount}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            
+          </table>
+        </div>
+      </div>
+  );
+};
+
+
+const BookingList = () => {
+  return (
+    <div>
+      <Navbar />
+      <Content />
+      <Footer />
+      <ChangePasswordModal />
+      <AddBooking />
+    </div>
+  );
+};
+
+export default BookingList;
 // jsx
 // <a
 //   className="app-nav__item dropdown-toggle"
@@ -52,7 +144,7 @@ const Navbar = () => {
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="http://localhost:5173/userlist">
-                    User List
+                    Admin List
                   </a>
                 </li>
               </ul>
