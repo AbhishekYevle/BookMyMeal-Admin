@@ -26,7 +26,7 @@ app.use(cors({
 //     allowedHeaders: ['Content-Type', 'Authorization']
 //   }));
 
-app.use("/api/admin", router);
+app.use("/api", router);
 
 // app.use("/", (req,res) => {
 //     res.status(200).send("Hello Welocme to Home Page")

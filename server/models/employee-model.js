@@ -1,8 +1,17 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
-const AdminSchema = new mongoose.Schema({
-    username:{
+const EmployeeSchema = new mongoose.Schema({
+    empId: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    firstName:{
+        type:String,
+        require: true
+    },
+    lastName:{
         type:String,
         require: true
     },
@@ -18,18 +27,30 @@ const AdminSchema = new mongoose.Schema({
         type:String,
         require: false
     },
+    gender:{
+        type:String,
+        require: true
+    },
     password:{
         type:String,
         require: true
     },
     isAdmin:{
         type:String,
-        default: true
+        default: false
+    },
+    isDelete:{
+        type:String,
+        default: false
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
     }
 });
 
 // json web token 
-AdminSchema.methods.generateToken = async function () {
+EmployeeSchema.methods.generateToken = async function () {
     try {
         return jwt.sign(
             {
@@ -47,6 +68,6 @@ AdminSchema.methods.generateToken = async function () {
     }
 }
 
-const Admin = new mongoose.model('Admin', AdminSchema);
+const Employee = new mongoose.model('Employee', EmployeeSchema);
 
-module.exports = Admin;
+module.exports = Employee;

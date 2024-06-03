@@ -1,45 +1,151 @@
-
-
-
-// require('dotenv').config();
-// const nodemailer = require('nodemailer');
-
-// let transporter = nodemailer.createTransport({
-//   host: process.env.EMAIL_HOST,
-//   port: process.env.EMAIL_PORT,
-//   secure: false, // true for 465, false for other ports
-//   auth: {
-//     user: process.env.EMAIL_USER, // Admin Gmail ID
-//     pass: process.env.EMAIL_PASS, // Admin Gmail Password
-//   },
-// })
-
-// export default transporter;
-// // const nodemailer = require("nodemailer");
-
-// // const transporter = nodemailer.createTransport({
-// //   host: "smtp.ethereal.email",
-// //   port: 587,
-// //   secure: false, // Use `true` for port 465, `false` for all other ports
-// //   auth: {
-// //     user: "maddison53@ethereal.email",
-// //     pass: "jn7jnAPss4f63QBp6D",
-// //   },
-// // });
-
-// // // async..await is not allowed in global scope, must use a wrapper
-// // async function main() {
-// //   // send mail with defined transport object
-// //   const info = await transporter.sendMail({
-// //     from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>', // sender address
-// //     to: "bar@example.com, baz@example.com", // list of receivers
-// //     subject: "Hello ✔", // Subject line
-// //     text: "Hello world?", // plain text body
-// //     html: "<b>Hello world?</b>", // html body
-// //   });
-
-// //   console.log("Message sent: %s", info.messageId);
-// //   // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-// // }
-
-// // main().catch(console.error);
+const getPasswordResetSuccessEmail = (email) => {
+    return {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Password Reset Successful',
+      html: `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Password Reset Successful</title>
+      </head>
+      <body>
+          <div class="container">
+              <div class="logo">
+                  <img src="https://drive.google.com/uc?id=1sYp31ujYU-59lCA6asnPXbIpvdfEK08O" alt="Rishabh Software">
+              </div>
+              <div class="content">
+                  <h2>Password Reset Successful.</h2>
+              </div>
+          </div>
+      </body>
+      </html>`
+    };
+  };
+  
+  const getPasswordResetLinkEmail = (email, resetUrl) => {
+    return {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Password Reset Link',
+      html: `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Password Reset Link</title>
+          <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  margin: 0;
+                  padding: 0;
+              }
+              .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+              }
+              .logo {
+                  text-align: center;
+                  margin-bottom: 20px;
+              }
+              .logo img {
+                  max-width: 200px;
+              }
+              .content {
+                  background-color: #f5f5f5;
+                  padding: 20px;
+                  border-radius: 5px;
+              }
+              .reset-link {
+                  background-color: #007bff;
+                  color: white;
+                  text-decoration: none;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  display: inline-block;
+                  margin-top: 20px;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <div class="logo">
+                  <img src="https://drive.google.com/uc?id=1sYp31ujYU-59lCA6asnPXbIpvdfEK08O" alt="Rishabh Software">
+              </div>
+              <div class="content">
+                  <h2>Password Reset Link</h2>
+                  <p>You requested a password reset. Click the button below to reset your password:</p>
+                  <a href="${resetUrl}" class="reset-link">Reset Password</a>
+              </div>
+          </div>
+      </body>
+      </html>`
+    };
+  };
+  
+  const getAddEmployeeEmail = (email, firstName, password) => {
+    return {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'BookMyMeal Credentials',
+      html: `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Password</title>
+          <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                  background-color: #f5f5f5;
+              }
+              .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  background-color: #ffffff;
+                  border-radius: 10px;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+              }
+              .logo {
+                  text-align: center;
+                  margin-bottom: 20px;
+              }
+              .logo img {
+                  max-width: 200px;
+              }
+              .content {
+                  padding: 20px;
+              }
+              .password {
+                  color: blue;
+                  font-weight: bold;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <div class="logo">
+                  <img src="https://drive.google.com/uc?id=1sYp31ujYU-59lCA6asnPXbIpvdfEK08O" alt="Rishabh Software">
+              </div>
+              <div class="content">
+                  <h2>${firstName}'s Credentials for BookMyMeal App</h2>
+                  <p>Your Email: ${email}</p>
+                  <p>Password: <a class="password">${password}</a></p>
+              </div>
+          </div>
+      </body>
+      </html>`
+    };
+  };
+  
+  module.exports = {
+    getPasswordResetSuccessEmail,
+    getPasswordResetLinkEmail,
+    getAddEmployeeEmail
+  };
+  
