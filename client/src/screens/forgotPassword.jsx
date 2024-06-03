@@ -16,7 +16,7 @@ const ForgotPasswordForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:5000/api/forgotpassword`, { email });
+      await axios.post(`http://43.205.144.105:5000/api/forgotpassword`, { email });
       // toast.success('Password reset link sent to your email!');
       alert('Password reset link sent to your email!');
     } catch (error) {

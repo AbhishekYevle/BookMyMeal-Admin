@@ -14,7 +14,7 @@ const Content = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios
-      .get(`http://localhost:5000/api/bookinglist`)
+      .get(`http://43.205.144.105:5000/api/bookinglist`)
       .then((response) => setBookings(response.data))
       .catch((error) => console.error('Error fetching booking list:', error.response.data));
   }, []);

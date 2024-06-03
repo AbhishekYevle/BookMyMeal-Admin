@@ -18,7 +18,7 @@ const AddUser = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios
-      .get(`http://localhost:5000/api/userlist`,   { headers: { Authorization: token } })
+      .get(`http://43.205.144.105:5000/api/userlist`,   { headers: { Authorization: token } })
       .then((response) => setUsers(response.data))
       .catch((err) => console.log(err));
   }, []);
@@ -49,7 +49,7 @@ const AddUser = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const url = `http://localhost:5000/api/addemployee`;
+      const url = `http://43.205.144.105:5000/api/addemployee`;
       const response = await axios.post(url, data, { headers: { Authorization: token } });
       console.log(response.data.msg, response.data.isError); 
       // toast.success("Employee Created Successfully.");

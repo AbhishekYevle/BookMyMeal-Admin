@@ -51,7 +51,7 @@ const SignIn = () => {
     }
 
     try {
-      const url = `http://localhost:5000/api/signin`;
+      const url = `http://43.205.144.105:5000/api/signin`;
       const response = await axios.post(url, data);
       console.log(response.data.msg); 
 

@@ -24,7 +24,7 @@ const AddBooking = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/userlist`)
+      .get(`http://43.205.144.105:5000/api/userlist`)
       .then((response) => {
         const usersWithCheck = response.data.map((user) => ({ ...user, isChecked: false }));
         setUsers(usersWithCheck);
@@ -143,7 +143,7 @@ const AddBooking = () => {
     console.log(bookingData);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/addbooking', bookingData);
+      const response = await axios.post('http://43.205.144.105:5000/api/addbooking', bookingData);
       document.getElementById('closeButton').click();
       alert(response.data.msg);
       window.location.reload();
