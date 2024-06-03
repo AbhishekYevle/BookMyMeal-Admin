@@ -12,12 +12,12 @@ const cors = require('cors');
 app.use( express.json() );
 
 // to allow all type of requests from any port
-// app.use(cors());
+app.use(cors());
 
 // to allow all type of requests from port:5173
-app.use(cors({
-    origin: `http://localhost:5173`
-  }));
+// app.use(cors({
+//     origin: `http://localhost:5173`
+//   }));
 
   // to allow particular type of requests from port:5173
 // app.use(cors({
