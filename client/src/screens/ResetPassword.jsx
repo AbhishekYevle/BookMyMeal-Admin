@@ -31,7 +31,7 @@ const ResetPassword = () => {
         return;
     }
 
-    axios.patch(`http://43.205.144.105:5000/api/resetpassword?email=${email}`, { newPassword })
+    axios.patch(`http://localhost:5000/api/resetpassword?email=${email}`, { newPassword })
         .then((response) => {
           // toast.success('Password changed successfully');
           alert('Password changed successfully');

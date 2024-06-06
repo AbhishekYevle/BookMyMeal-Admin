@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-hot-toast';
+// import 'react-toastify/dist/ReactToastify.css';
 import logo from '../images/logo.svg';
 
 // const server = process.env.SERVER_API;
@@ -51,7 +51,7 @@ const SignIn = () => {
     }
 
     try {
-      const url = `http://43.205.144.105:5000/api/signin`;
+      const url = `http://localhost:5000/api/signin`;
       const response = await axios.post(url, data);
       console.log(response.data.msg); 
 

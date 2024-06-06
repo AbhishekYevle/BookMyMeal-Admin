@@ -7,7 +7,7 @@ const Admin = () => {
 
     useEffect(() => {
         
-        axios.get(`http://43.205.144.105:5000/api/userlist`)
+        axios.get(`http://localhost:5000/api/userlist`)
             .then(response => setAdmins(response.data))
             .catch(err => console.log(err));
     }, []);

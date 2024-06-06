@@ -4,6 +4,7 @@ import Calendar from '../component/Calendar';
 import Footer from '../component/Footer';
 import BookingSummary from '../component/BookingSummary';
 import moment from 'moment';
+import ChangePasswordModal from '../component/ChangePasswordModal';
 
 const CalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
@@ -31,6 +32,7 @@ const CalendarScreen = () => {
           </div>
         </div>
       </div>
+      <ChangePasswordModal />
       <Footer />
     </div>
   );
