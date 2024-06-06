@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-hot-toast';
+// import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const AddBooking = () => {
@@ -23,8 +23,10 @@ const AddBooking = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    
+    const token = localStorage.getItem('token');
     axios
-      .get(`http://43.205.144.105:5000/api/userlist`)
+      .get(`http://localhost:5000/api/userlist`, { headers: { Authorization: token } })
       .then((response) => {
         const usersWithCheck = response.data.map((user) => ({ ...user, isChecked: false }));
         setUsers(usersWithCheck);
@@ -132,7 +134,7 @@ const AddBooking = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://43.205.144.105:5000/api/addbooking', bookingData, { headers: { Authorization: token } });
+      const response = await axios.post('http://localhost:5000/api/addbooking', bookingData, { headers: { Authorization: token } });
       document.getElementById('closeButton').click();
       alert(response.data.msg);
       window.location.reload();

@@ -143,9 +143,62 @@ const getPasswordResetSuccessEmail = (email) => {
     };
   };
   
+  const getDisableDateEmail = (email, date) => {
+    return {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Date Disabled by Admin',
+      html: `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Date is Disabled</title>
+      </head>
+      <body>
+          <div class="container">
+              <div class="logo">
+                  <img src="https://drive.google.com/uc?id=1sYp31ujYU-59lCA6asnPXbIpvdfEK08O" alt="Rishabh Software">
+              </div>
+              <div class="content">
+                  <h2>Your Booking On ${date} is disabled by Admin.</h2>
+              </div>
+          </div>
+      </body>
+      </html>`
+    };
+  };
+
+  const getAddBookingEmail = (email, dates) => {
+    return {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Booking Created Successfully',
+      html: `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Booking Created.</title>
+      </head>
+      <body>
+          <div class="container">
+              <div class="logo">
+                  <img src="https://drive.google.com/uc?id=1sYp31ujYU-59lCA6asnPXbIpvdfEK08O" alt="Rishabh Software">
+              </div>
+              <div class="content">
+                  <h2>Your Booking is On ${dates} is created by Admin.</h2>
+              </div>
+          </div>
+      </body>
+      </html>`
+    };
+  };
+  
   module.exports = {
     getPasswordResetSuccessEmail,
     getPasswordResetLinkEmail,
-    getAddEmployeeEmail
+    getAddEmployeeEmail,
+    getDisableDateEmail,
+    getAddBookingEmail
   };
-  

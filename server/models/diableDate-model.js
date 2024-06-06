@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const DisabledDateSchema = new mongoose.Schema({
-  dates: {
-    type: [Date],
+  date: {
+    type: Date,
     required: true
   },
   reason: {
@@ -12,6 +12,10 @@ const DisabledDateSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  isDelete: {
+    type: String,
+    default: false
   }
 });
 

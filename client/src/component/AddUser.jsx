@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,13 +12,13 @@ const AddUser = () => {
   const [data, setData] = useState({ username: "", email: "", phone: "", department: "", gender: "", password: "" });
   // const [selectedGender, setSelectedGender] = useState(data.gender);
   // const [error, setError] = useState("");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios
-      .get(`http://43.205.144.105:5000/api/userlist`,   { headers: { Authorization: token } })
+      .get(`http://localhost:5000/api/userlist`,   { headers: { Authorization: token } })
       .then((response) => setUsers(response.data))
       .catch((err) => console.log(err));
   }, []);
@@ -48,11 +48,29 @@ const AddUser = () => {
     // }
 
     try {
+
+      const handleLogout = () => {
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
+        localStorage.removeItem('token');
+        // sessionStorage.removeItem('isAuthenticated');
+        toast.success('Logged Out!');
+        navigate('/');
+      };
+    
+
       const token = localStorage.getItem('token');
-      const url = `http://43.205.144.105:5000/api/addemployee`;
+      const url = `http://localhost:5000/api/addemployee`;
       const response = await axios.post(url, data, { headers: { Authorization: token } });
       console.log(response.data.msg, response.data.isError); 
       // toast.success("Employee Created Successfully.");
+
+      if (response.data.error === 'Failed to authenticate token') {
+        alert('Failed to authenticate Admin. Please re-login.');
+        handleLogout();  
+      } else {
+        alert('Failed to Add Employee');
+      }
 
       if (response.data.isError === false) {
         // localStorage.setItem('isAuthenticated', 'true');
@@ -82,7 +100,7 @@ const AddUser = () => {
     <div className="modal-dialog modal-md" role="document">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title" id="exampleModalLabel">Create Admin</h5>
+          <h5 className="modal-title" id="exampleModalLabel">Create Employee</h5>
           <button type="button" className="close" data-dismiss="modal" aria-label="Close" id="closeButton" >
             <span aria-hidden="true">×</span>
           </button>

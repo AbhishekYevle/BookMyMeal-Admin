@@ -30,6 +30,8 @@ router.route("/adddisableddates").post(verifyToken, authController.addDisabledDa
 
 router.route("/disableddates").get(verifyToken, authController.DisabledDates);
 
+router.route("/deletedisabledate").post(authController.deleteDisableDate);
+
 // router.route("/").get((req, res) => {
 //     res.render('index', { text: 'Hey' })
 // });

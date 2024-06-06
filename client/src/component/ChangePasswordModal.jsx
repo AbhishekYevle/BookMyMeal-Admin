@@ -48,7 +48,7 @@ const ChangePasswordModal = () => {
 
         const token = localStorage.getItem('token');
 
-        const response = await axios.patch('http://43.205.144.105:5000/api/changepassword', {
+        const response = await axios.patch('http://localhost:5000/api/changepassword', {
           oldPassword,
           newPassword,
         },
@@ -64,7 +64,7 @@ const ChangePasswordModal = () => {
         console.error('Error changing password:', error);
         if (error.response && error.response.data && error.response.data.error === 'Failed to authenticate token') {
           alert('Failed to authenticate token. Please re-login.');
-          handleLogout(); // Using the handleLogout function
+          handleLogout(); 
         } else {
           toast.error('Failed to change password');
         }

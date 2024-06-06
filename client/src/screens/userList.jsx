@@ -5,28 +5,45 @@ import Navbar from '../component/Navbar';
 import AddUser from "../component/AddUser";
 import ChangePasswordModal from "../component/ChangePasswordModal";
 import Footer from "../component/Footer";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const Content = () => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     console.log(token);
     axios
-      .get(`http://43.205.144.105:5000/api/userlist`, { headers: { Authorization: token } })
+      .get(`http://localhost:5000/api/userlist`, { headers: { Authorization: token } })
       .then((response) => setUsers(response.data))
       .catch((err) => console.log(err));
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+    localStorage.removeItem('token');
+    // sessionStorage.removeItem('isAuthenticated');
+    toast.success('Logged Out!');
+    navigate('/');
+  };
+
   const deleteUser = async (email, empId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.patch(`http://43.205.144.105:5000/api/deleteemployee`, { email, empId, isDelete: true }, { headers: { Authorization: token } });
+      const response = await axios.patch(`http://localhost:5000/api/deleteemployee`, { email, empId, isDelete: true }, { headers: { Authorization: token } });
       setUsers(users.filter((user) => user.email !== email));
       alert(response.data.msg);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
+      if (error.response.data.error === 'Failed to authenticate token') {
+        alert('Failed to authenticate token. Please re-login.');
+        handleLogout(); 
+      } 
     }
   };
 
@@ -36,7 +53,7 @@ const Content = () => {
         <div className="container pt-30 mb-30">
           <div className="container-head">
             <div className="container-left">
-              <h3 className="container-title">Admin List</h3>
+              <h3 className="container-title">Employee List</h3>
             </div>
             <div className="container-right">
               <a
@@ -52,7 +69,7 @@ const Content = () => {
           </div>
           <div className="content-tab">
             <a className="content-tab_link active" href="#">
-              Rishabh Admins
+              Rishabh Employees
             </a>
           </div>
           <table className="table">

@@ -8,7 +8,7 @@ require('dotenv').config();
 const transporter = require('../utils/transporter');
 const generateRandomPassword = require('../utils/generateRandomPassword');
 const getNextEmpId = require('../utils/getNextEmpId');
-const { getPasswordResetSuccessEmail, getPasswordResetLinkEmail, getAddEmployeeEmail } = require('../utils/sendEmail');
+const { getPasswordResetSuccessEmail, getPasswordResetLinkEmail, getAddEmployeeEmail, getDisableDateEmail, getAddBookingEmail } = require('../utils/sendEmail');
 const { reset } = require("nodemon");
 // const { isErrored } = require("nodemailer/lib/xoauth2");
 // const { default: BookingList } = require("../../client/src/screens/BookingList");
@@ -41,6 +41,13 @@ const AddEmployee = async (req,res) => {
         console.log(req.body);
         const { firstName, lastName, email, phone, department, gender } = req.body;
 
+        if(!firstName || !lastName || !email || !phone || !department || !gender ){
+          res.status(200).json( 
+            { 
+                isError: true,
+                msg: "Registration Unsuccessfull!"
+              })
+        }
          // generate random password
          const password = generateRandomPassword(10);
          console.log(password);
@@ -396,6 +403,9 @@ const AddBooking = async (req, res) => {
 
                     const bookingCreated = await Booking.create(bookingData);
                     console.log(`Booking created for ${employee.firstName} ${employee.lastName}`);
+                    const employeeEmail = await Employee.findOne({empId: employee.empId});
+
+                    await transporter.sendMail(getAddBookingEmail(employeeEmail.email, dates));
                 }
 
                 res.status(200).json({ msg: "Employee bookings successful." });
@@ -492,19 +502,36 @@ module.exports.deleteBooking = deleteBooking;
 
 const addDisabledDates = async (req, res) => {
     try {
-      const { dates, reason } = req.body;
+      const { date, reason } = req.body;
   
-      if (!dates || !reason) {
+      if (!date || !reason) {
         return res.status(400).json({ error: 'Dates and reason are required.' });
       }
   
       const newDisabledDate = new DisabledDate({
-        dates,
+        date,
         reason
       });
   
       await newDisabledDate.save();
   
+      const bookings = await Booking.find({ dates: { $in: [newDisabledDate.date] } });
+
+      if (bookings.length > 0) {
+        for (const booking of bookings) {
+          
+          if (booking.employees[0] && booking.employees[0].empId) {
+            const employee = await Employee.findOne({ empId: booking.employees[0].empId });
+            const userEmail = employee.email;
+  
+            await transporter.sendMail(getDisableDateEmail(userEmail, date));
+          }
+          // const employee = await Employee.findOne({empId: booking.employees[0].empId});
+          //   const userEmail = employee.email;
+
+          //   await transporter.sendMail(getDisableDateEmail(userEmail, date));
+          }
+    }
       res.status(201).json({ msg: 'Dates Diabled Successfully', newDisabledDate });
     } catch (error) {
       console.error('Error adding disabled date:', error);
@@ -527,8 +554,35 @@ const DisabledDates = async (req, res) => {
     }
   }
   
-  module.exports.DisabledDates = DisabledDates;
- 
+module.exports.DisabledDates = DisabledDates;
+
+// *------------------------
+// Diable Dates List Logic 
+// *------------------------
+
+const deleteDisableDate = async (req, res) => {
+  try {
+    const { id } = req.body;
+    // console.log(_id);
+
+    const deletedDate = await DisabledDate.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isDelete: true } },
+      { new: true }
+    );
+
+    if (!deletedDate) {
+      return res.status(404).json({ error: 'Disabled date not found.' });
+    }
+    res.status(200).json({ message: 'Disabled date deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting disabled date:', error);
+    res.status(500).json({ error: 'Failed to delete disabled date.' });
+  }
+};
+
+module.exports.deleteDisableDate = deleteDisableDate;
+
 // *------------------------
 // Chnage Password Logic 
 // *------------------------

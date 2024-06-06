@@ -1,25 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const localizer = momentLocalizer(moment);
 
 const Calendar = ({ onSelectDate, events, setEvents }) => {
   const [todayBookingCount, setTodayBookingCount] = useState(0);
   const [disabledDates, setDisabledDates] = useState([]);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+    localStorage.removeItem('token');
+    toast.success('Logged Out!');
+    navigate('/');
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://43.205.144.105:5000/api/bookinglist',  { headers: { Authorization: token } });
+        const response = await axios.get('http://localhost:5000/api/bookinglist', { headers: { Authorization: token } });
         const data = await response.data;
-
+    
+        if (response.data.error === 'Failed to authenticate token') {
+          alert('Failed to authenticate token. Please re-login.');
+          handleLogout(); 
+        }
+    
         const today = moment().format('YYYY-MM-DD');
         let count = 0;
-
+    
         const mappedEvents = data.flatMap((item) => {
           return item.dates.map((date) => {
             const eventDate = moment(date).format('YYYY-MM-DD');
@@ -33,18 +50,23 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
               start: new Date(date),
               end: new Date(date),
               allDay: true,
-              category: item.category // Add category to event data
+              category: item.category 
             };
           });
         });
-
+    
+        const filteredEvents = mappedEvents.filter(event => {
+          const eventDate = moment(event.start).format('YYYY-MM-DD');
+          return !disabledDates.some(disabledDate => moment(disabledDate).format('YYYY-MM-DD') === eventDate);
+        });
+    
         setTodayBookingCount(count);
-        setEvents(mappedEvents);
+        setEvents(filteredEvents);
       } catch (error) {
         console.error('Error fetching booking data:', error);
       }
     };
-
+    
     fetchData();
   }, [setEvents]);
 
@@ -52,10 +74,17 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
     const fetchDisabledDates = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://43.205.144.105:5000/api/disableddates',  { headers: { Authorization: token } });
-        setDisabledDates(response.data);
+        const response = await axios.get('http://localhost:5000/api/disableddates', { headers: { Authorization: token } });
+        setDisabledDates(response.data.map(date => new Date(date.date)));
       } catch (error) {
         console.error('Error fetching disabled dates', error);
+        if (error.response && error.response.data && error.response.data.error === 'Failed to authenticate token') {
+          alert('Failed to authenticate User. Please re-login.');
+          handleLogout(); 
+        } else {
+          alert('Failed to fetching disabled dates');
+        }
+
       }
     };
 
@@ -65,7 +94,7 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
   const dayPropGetter = (date) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
 
-    if (disabledDates.some(disabledDate => disabledDate.dates.some(d => moment(d).format('YYYY-MM-DD') === formattedDate))) {
+    if (disabledDates.some(disabledDate => moment(disabledDate).format('YYYY-MM-DD') === formattedDate)) {
       return {
         className: 'rbc-day-disabled',
         style: {
@@ -92,7 +121,7 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
         backgroundColor = '#6FCB1F';
         break;
       default:
-        backgroundColor = '#3174ad'; // default color
+        backgroundColor = '#3174ad'; 
     }
     return {
       style: {
@@ -111,11 +140,11 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
     const today = moment().format('YYYY-MM-DD');
 
     if (selectedDate < today) {
-      // for not updating selected date before present date
+      // not show any data before present date in booking summary
       return;
     }
 
-    if (disabledDates.some(disabledDate => disabledDate.dates.some(d => moment(d).format('YYYY-MM-DD') === selectedDate))) {
+    if (disabledDates.some(disabledDate => moment(disabledDate).format('YYYY-MM-DD') === selectedDate)) {
       onSelectDate('');
       return;
     }
@@ -123,16 +152,11 @@ const Calendar = ({ onSelectDate, events, setEvents }) => {
     onSelectDate(selectedDate);
   };
 
-  const filteredEvents = events.filter(event => {
-    const eventDate = moment(event.start).format('YYYY-MM-DD');
-    return !disabledDates.some(disabledDate => disabledDate.dates.some(d => moment(d).format('YYYY-MM-DD') === eventDate));
-  });
-
   return (
     <div className="tile">
       <BigCalendar
         localizer={localizer}
-        events={filteredEvents}
+        events={events}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
